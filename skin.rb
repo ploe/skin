@@ -19,11 +19,12 @@ ARGV.each { |arg|
 	Dir.mkdir(dir, 0700)
 	
 	# get every image URL and dump it in to the dir
-	http.body_str.scan(/<a href="\/\/(images.4chan.org\/.\/src\/.*?)"/i) { |i|
+	http.body_str.scan(/<a class="fileThumb" href="\/\/(.*?)"/i) { |i|
+		puts i
 		i = i.join
 		image = Curl.get(i)
 
-		file = dir + "/" + i.sub(/images.4chan.org\/.\/src\//i, "").to_s
+		file = dir + "/" + i.sub(/.*\//i, "").to_s
 		File.open(file, "wb") { |f|
 			f.write(image.body_str)
 		}
